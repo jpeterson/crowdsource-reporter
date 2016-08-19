@@ -174,7 +174,7 @@ define([
 
                 }));
 
-                //On click of address from main map, show it in geoform  
+                //On click of address from main map, show it in geoform
                 this.mapSearch.onAddressClicked = lang.hitch(this, function (geometry) {
                     var evt = { "geometry": geometry };
                     if (this.geoformInstance && !domClass.contains(dom.byId('geoformContainer'), "esriCTHidden")) {
@@ -957,13 +957,14 @@ define([
         * @memberOf main
         */
         _addNewFeature: function (objectId, layer, addedFrom) {
-            var queryFeature, featureDef = new Deferred(), currentDateTime = new Date().getTime();
+            var queryFeature, featureDef = new Deferred(), currentDateTime = new Date().getTime(), queryTask;
             queryFeature = new Query();
             queryFeature.objectIds = [parseInt(objectId, 10)];
             queryFeature.outFields = ["*"];
             queryFeature.where = currentDateTime + "=" + currentDateTime;
             queryFeature.returnGeometry = true;
-            layer.queryFeatures(queryFeature, lang.hitch(this, function (result) {
+            queryTask = new QueryTask(layer.url);
+            queryTask.execute(queryFeature, lang.hitch(this, function (result) {
                 this._createFeature(result.features[0], layer, addedFrom);
                 featureDef.resolve();
             }), function (error) {
@@ -1157,7 +1158,7 @@ define([
         * @param{object} map
         */
         highLightFeatureOnClick: function (layer, objectId, selectedGraphicsLayer, map) {
-            var esriQuery, highlightSymbol, currentDateTime = new Date().getTime();
+            var esriQuery, highlightSymbol, currentDateTime = new Date().getTime(), queryTask;
             this.mapInstance = map;
             if (selectedGraphicsLayer) {
                 // clear graphics layer
@@ -1167,7 +1168,8 @@ define([
             esriQuery.objectIds = [parseInt(objectId, 10)];
             esriQuery.where = currentDateTime + "=" + currentDateTime;
             esriQuery.returnGeometry = true;
-            layer.queryFeatures(esriQuery, lang.hitch(this, function (featureSet) {
+            queryTask = new QueryTask(layer.url);
+            queryTask.execute(esriQuery, lang.hitch(this, function (featureSet) {
                 // Check if feature is valid and have valid geometry, if not prompt with no geometry message
                 if (featureSet && featureSet.features && featureSet.features.length > 0 && featureSet.features[0] && featureSet.features[0].geometry) {
                     highlightSymbol = this.getHighLightSymbol(featureSet.features[0], layer);
@@ -1639,7 +1641,7 @@ define([
                 if (this.config.geolocation) {
                     this._createBufferParameters(featureLayer, details, false);
                 } else {
-                    // Some layers return NULL if no feature are present, to handle that simply assign empty array to results 
+                    // Some layers return NULL if no feature are present, to handle that simply assign empty array to results
                     if (!results) { results = []; }
                     //Sort obtained object ids in descending order
                     results.sort(function (a, b) {
@@ -1826,7 +1828,7 @@ define([
         * @memberOf main
         */
         _selectFeaturesInBuffer: function (featureLayer, details, bufferedGeometries) {
-            var queryFeature, newGraphic, currentDateTime = new Date().getTime();
+            var queryFeature, newGraphic, currentDateTime = new Date().getTime(), queryTask;
             queryFeature = new Query();
             queryFeature.objectIds = this.sortedBufferArray[this.bufferPageNumber];
             queryFeature.outFields = ["*"];
@@ -1835,7 +1837,8 @@ define([
             if (bufferedGeometries) {
                 queryFeature.geometry = bufferedGeometries;
             }
-            this.selectedLayer.queryFeatures(queryFeature, lang.hitch(this, function (result) {
+            queryTask = new QueryTask(this.selectedLayer.url);
+            queryTask.execute(queryFeature, lang.hitch(this, function (result) {
                 var i, fields;
                 if (result.features) {
                     for (i = 0; i < result.features.length; i++) {
