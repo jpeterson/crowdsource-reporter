@@ -455,41 +455,56 @@ define([
       var deferred = new Deferred();
       if (this.config.appid) {
         arcgisUtils.getItem(this.config.appid).then(lang.hitch(this, function (response) {
-          var cfg = {};
-          if (response.item && response.itemData && response.itemData.values) {
-            // get app config values - we'll merge them with config later.
-            cfg = response.itemData.values;
-            // save response
-            cfg.appResponse = response;
-          }
-          // get the extent for the application item. This can be used to override the default web map extent
-          if (response.item && response.item.extent) {
-            cfg.application_extent = response.item.extent;
-          }
-          // get any app proxies defined on the application item
-          if (response.item && response.item.appProxies) {
-            var layerMixins = array.map(response.item.appProxies, function (p) {
-              return {
-                "url": p.sourceUrl,
-                "mixin": {
-                  "url": p.proxyUrl
-                }
-              };
+          if (response.item && response.itemData) {
+
+            arcgisUtils.getItem(response.itemData.source).then(lang.hitch(this, function (templateResponse) {
+              var cfg = {};
+              if (templateResponse.itemData && templateResponse.itemData.values) {
+                cfg = templateResponse.itemData.values;
+              }
+              if (response.itemData.values) {
+                // get app config values - we'll merge them with config later.
+                cfg = lang.mixin(cfg, response.itemData.values);
+                // save response
+                cfg.appResponse = response;
+              }
+              // get the extent for the application item. This can be used to override the default web map extent
+              if (response.item.extent) {
+                cfg.application_extent = response.item.extent;
+              }
+              // get any app proxies defined on the application item
+              if (response.item.appProxies) {
+                var layerMixins = array.map(response.item.appProxies, function (p) {
+                  return {
+                    "url": p.sourceUrl,
+                    "mixin": {
+                      "url": p.proxyUrl
+                    }
+                  };
+                });
+                cfg.layerMixins = layerMixins;
+              }
+              this.appConfig = cfg;
+              deferred.resolve(cfg);
+            }), function (error) {
+              this. _appConfigFail(deferred, error);
             });
-            cfg.layerMixins = layerMixins;
+          } else {
+            this. _appConfigFail(deferred, error);
           }
-          this.appConfig = cfg;
-          deferred.resolve(cfg);
         }), function (error) {
-          if (!error) {
-            error = new Error("Error retrieving application configuration.");
-          }
-          deferred.reject(error);
+          this. _appConfigFail(deferred, error);
         });
       } else {
         deferred.resolve();
       }
       return deferred.promise;
+    },
+    _appConfigFail(deferred, error) {
+      if (!error) {
+        error = new Error("Error retrieving application configuration.");
+      }
+      deferred.reject(error);
     },
     queryOrganization: function () {
       var deferred = new Deferred();
