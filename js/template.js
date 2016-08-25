@@ -456,12 +456,26 @@ define([
       if (this.config.appid) {
         arcgisUtils.getItem(this.config.appid).then(lang.hitch(this, function (response) {
           if (response.item && response.itemData) {
+            var templateFetch = new Deferred();
 
-            arcgisUtils.getItem(response.itemData.source).then(lang.hitch(this, function (templateResponse) {
-              var cfg = {};
-              if (templateResponse.itemData && templateResponse.itemData.values) {
-                cfg = templateResponse.itemData.values;
-              }
+            // If the app item has a source (i.e., a template), fetch that template's values
+            if (response.itemData.source) {
+              templateRequest = arcgisUtils.getItem(response.itemData.source);
+              templateRequest.then(lang.hitch(this, function (templateResponse) {
+                var cfg = {};
+                if (templateResponse.itemData && templateResponse.itemData.values) {
+                  cfg = templateResponse.itemData.values;
+                }
+                templateFetch.resolve(cfg);
+              }), function (error) {
+                this. _appConfigFail(deferred, error);
+              });
+            } else {
+              templateFetch.resolve({});
+            }
+
+            // After we have the template data (or directly, if there isn't a template, merge the template and app values
+            templateFetch.then(function (cfg) {
               if (response.itemData.values) {
                 // get app config values - we'll merge them with config later.
                 cfg = lang.mixin(cfg, response.itemData.values);
@@ -486,9 +500,8 @@ define([
               }
               this.appConfig = cfg;
               deferred.resolve(cfg);
-            }), function (error) {
-              this. _appConfigFail(deferred, error);
             });
+
           } else {
             this. _appConfigFail(deferred, error);
           }
