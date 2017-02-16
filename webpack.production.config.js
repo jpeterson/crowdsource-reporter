@@ -62,11 +62,7 @@ module.exports = {
   ],
 
   devServer: {
-    port: 5005
-  },
-
-  performance: {
-    hints: false
+    port: 9000
   },
 
   externals: [
