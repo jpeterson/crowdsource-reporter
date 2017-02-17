@@ -27,8 +27,8 @@ module.exports = {
 
   module: {
     rules: [{
-      test: /\.js$/,
       enforce: 'pre',
+      test: /\.js$/,
       exclude: /node_modules/,
       use: {
         loader: 'eslint-loader',
@@ -36,6 +36,13 @@ module.exports = {
           failOnWarning: false,
           failOnError: true
         }
+      }
+    }, {
+      test: /\.js$/,
+      exclude: /node_modules/,
+      use: 'babel-loader',
+      options: {
+        presets: ['es2015']
       }
     }, {
       test: /\.html$/,
