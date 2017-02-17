@@ -4,6 +4,8 @@ var path = require('path');
 var webpack = require('webpack');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
+var CopyWebpackPlugin = require('copy-webpack-plugin');
+
 
 
 module.exports = {
@@ -64,7 +66,10 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: 'index.html',
       inject: false
-    })
+    }),
+    new CopyWebpackPlugin([
+      { from: 'js/nls', to: 'js/nls' }
+    ])
   ],
 
   devServer: {
