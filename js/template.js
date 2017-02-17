@@ -37,6 +37,7 @@ import ArcGISOAuthInfo from 'esri/arcgis/OAuthInfo';
 import arcgisUtils from 'esri/arcgis/utils';
 import GeometryService from 'esri/tasks/GeometryService';
 import defaults from '../config/defaults';
+import appBundle from 'dojo/i18n!application/nls/resources';
 export default declare([Evented], {
   config: {},
   orgConfig: {},
@@ -264,37 +265,35 @@ export default declare([Evented], {
     let deferred, dirNode, classes, rtlClasses;
     deferred = new Deferred();
     if (this.templateConfig.queryForLocale) {
-      require(['dojo/i18n!application/nls/resources'], lang.hitch(this, function (appBundle) {
-        const cfg = {};
-          // Get the localization strings for the template and store in an i18n variable. Also determine if the
-          // application is in a right-to-left language like Arabic or Hebrew.
-        cfg.i18n = appBundle || {};
-          // Bi-directional language support added to support right-to-left languages like Arabic and Hebrew
-          // Note: The map must stay ltr
-        cfg.i18n.direction = 'ltr';
-        array.some(['ar', 'he'], lang.hitch(this, l => {
-          if (kernel.locale.indexOf(l) !== -1) {
-            cfg.i18n.direction = 'rtl';
-            return true;
-          }
-          return false;
-        }));
-          // add a dir attribute to the html tag. Then you can add special css classes for rtl languages
-        dirNode = document.getElementsByTagName('html')[0];
-        classes = `${dirNode.className} `;
-        if (cfg.i18n.direction === 'rtl') {
-            // need to add support for dj_rtl.
-            // if the dir node is set when the app loads dojo will handle.
-          dirNode.setAttribute('dir', 'rtl');
-          rtlClasses = ` esriRTL dj_rtl dijitRtl ${classes.replace(/ /g, '-rtl ')}`;
-          dirNode.className = lang.trim(classes + rtlClasses);
-        } else {
-          dirNode.setAttribute('dir', 'ltr');
-          domClass.add(dirNode, 'esriLTR');
+      const cfg = {};
+        // Get the localization strings for the template and store in an i18n variable. Also determine if the
+        // application is in a right-to-left language like Arabic or Hebrew.
+      cfg.i18n = appBundle || {};
+        // Bi-directional language support added to support right-to-left languages like Arabic and Hebrew
+        // Note: The map must stay ltr
+      cfg.i18n.direction = 'ltr';
+      array.some(['ar', 'he'], lang.hitch(this, l => {
+        if (kernel.locale.indexOf(l) !== -1) {
+          cfg.i18n.direction = 'rtl';
+          return true;
         }
-        this.i18nConfig = cfg;
-        deferred.resolve(cfg);
+        return false;
       }));
+        // add a dir attribute to the html tag. Then you can add special css classes for rtl languages
+      dirNode = document.getElementsByTagName('html')[0];
+      classes = `${dirNode.className} `;
+      if (cfg.i18n.direction === 'rtl') {
+          // need to add support for dj_rtl.
+          // if the dir node is set when the app loads dojo will handle.
+        dirNode.setAttribute('dir', 'rtl');
+        rtlClasses = ` esriRTL dj_rtl dijitRtl ${classes.replace(/ /g, '-rtl ')}`;
+        dirNode.className = lang.trim(classes + rtlClasses);
+      } else {
+        dirNode.setAttribute('dir', 'ltr');
+        domClass.add(dirNode, 'esriLTR');
+      }
+      this.i18nConfig = cfg;
+      deferred.resolve(cfg);
     } else {
       deferred.resolve();
     }
