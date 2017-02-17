@@ -30,6 +30,8 @@ import Help from '../help/help';
 import _WidgetBase from 'dijit/_WidgetBase';
 import _TemplatedMixin from 'dijit/_TemplatedMixin';
 import _WidgetsInTemplateMixin from 'dijit/_WidgetsInTemplateMixin';
+import appIcon from '../../../images/app-icon.png';
+
 export default declare([_WidgetBase, _TemplatedMixin, _WidgetsInTemplateMixin], {
   templateString: template,
   mobileMenu: null,
@@ -167,7 +169,7 @@ export default declare([_WidgetBase, _TemplatedMixin, _WidgetsInTemplateMixin], 
     } else if (this.appConfig.groupInfo.results.length > 0 && this.appConfig.groupInfo.results[0].thumbnailUrl) {
       domAttr.set(this.applicationHeaderIcon, 'src', this.appConfig.groupInfo.results[0].thumbnailUrl);
     } else {
-      domAttr.set(this.applicationHeaderIcon, 'src', `${window.dojoConfig.baseURL}/images/app-icon.png`);
+      domAttr.set(this.applicationHeaderIcon, 'src', `${appIcon}`);
     }
     applicationIcon = domAttr.get(this.applicationHeaderIcon, 'src');
 

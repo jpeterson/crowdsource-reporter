@@ -4,6 +4,8 @@ var path = require('path');
 var webpack = require('webpack');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
+var CopyWebpackPlugin = require('copy-webpack-plugin');
+
 
 
 module.exports = {
@@ -19,8 +21,7 @@ module.exports = {
   },
 
   output: {
-    path: path.resolve(__dirname),
-    publicPath: '/',
+    path: path.resolve(__dirname, 'dist'),
     filename: 'bundle.js',
     libraryTarget: 'amd'
   },
@@ -65,16 +66,14 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: 'index.html',
       inject: false
-    })
+    }),
+    new CopyWebpackPlugin([
+      { from: 'js/nls', to: 'js/nls' }
+    ])
   ],
 
-  // devServer: {
-  //   port: 8001,
-  //   stats: 'verbose'
-  // },
-
-  performance: {
-    hints: false
+  devServer: {
+    port: 9000
   },
 
   externals: [
