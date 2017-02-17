@@ -385,6 +385,7 @@ export default declare([Evented], {
         // Use local webmap instead of portal webmap
       if (this.templateConfig.useLocalWebmap) {
           // get webmap js file
+          // TODO: fix this... https://github.com/webpack/webpack/issues/196#issuecomment-71917456
         require([this.templateConfig.localWebmapFile], lang.hitch(this, function (webmap) {
             // return webmap json
           cfg.itemInfo = webmap;
