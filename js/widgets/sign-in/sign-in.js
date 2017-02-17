@@ -36,6 +36,15 @@ import FBHelper from '../sign-in/facebook-helper';
 import TWHelper from '../sign-in/twitter-helper';
 import Help from '../help/help';
 import query from 'dojo/query';
+
+import signinBgImg from '../../../images/signinbg.png';
+import guestUserImg from '../../../images/guest-user.png';
+import facebookImg from '../../../images/facebook.png';
+import twitterImg from '../../../images/twitter.png';
+import googlePlusImg from '../../../images/googleplus.png';
+import esriImg from '../../../images/esri.png';
+import separatorImg from '../../../images/seperator.png';
+
 export default declare([_WidgetBase, _TemplatedMixin, _WidgetsInTemplateMixin], {
   templateString: template,
   _config: null,
@@ -124,12 +133,7 @@ export default declare([_WidgetBase, _TemplatedMixin, _WidgetsInTemplateMixin], 
     }
     domAttr.set(this.signinGuestUser, 'innerHTML', this._config.i18n.signin.guestSigninText);
     domAttr.set(this.signinOptions, 'innerHTML', this._config.i18n.signin.signinOptionsText);
-    if (this._config.signInBackgroundImage.indexOf('http') === 0) {
-      domStyle.set(this.signinBgImage, 'backgroundImage', `url(${this._config.signInBackgroundImage})`);
-    } else {
-      domStyle.set(this.signinBgImage, 'backgroundImage', `url(${window.dojoConfig.baseURL}${this._config.signInBackgroundImage})`);
-    }
-
+    domStyle.set(this.signinBgImage, 'backgroundImage', `url(${signinBgImg})`);
             //If guest login is disabled from configuration, make sure we are not showing it on login screen
     if (!this._config.enableGuestAccess) {
       domStyle.set(this.signInGuestButtonContainer, 'display', 'none');
@@ -198,14 +202,30 @@ export default declare([_WidgetBase, _TemplatedMixin, _WidgetsInTemplateMixin], 
         * @memberOf widgets/sign-in/sign-in handle
         */
   _setLoginScreenIcons: function (iconColor) {
-    let imageBaseURL;
-    imageBaseURL = `${window.dojoConfig.baseURL}/images/${iconColor}`;
-    domStyle.set(this.signinGuestButton, 'backgroundImage', `url(${imageBaseURL}guest-user.png)`);
-    domStyle.set(this.signinFBButton, 'backgroundImage', `url(${imageBaseURL}facebook.png)`);
-    domStyle.set(this.signinTwitterButton, 'backgroundImage', `url(${imageBaseURL}twitter.png)`);
-    domStyle.set(this.signinGPlusButton, 'backgroundImage', `url(${imageBaseURL}googleplus.png)`);
-    domStyle.set(this.signinEsriButton, 'backgroundImage', `url(${imageBaseURL}esri.png)`);
-    domStyle.set(this.signinOrDiv, 'backgroundImage', `url(${imageBaseURL}seperator.png)`);
+    // let imageBaseURL;
+    // imageBaseURL = `${window.dojoConfig.baseURL}/images/${iconColor}`;
+
+    // import guestUserImg from '../../../images/guest-user.png';
+    // import facebookImg from '../../../images/facebook.png';
+    // import twitterImg from '../../../images/twitter.png';
+    // import googlePlusImg from '../../../images/googleplus.png';
+    // import esriImg from '../../../images/esri.png';
+    // import separatorImg from '../../../images/seperator.png';
+
+    // TODO: use imports instead of urls
+    domStyle.set(this.signinGuestButton, 'backgroundImage', `url(${guestUserImg}`);
+    domStyle.set(this.signinFBButton, 'backgroundImage', `url(${facebookImg}`);
+    domStyle.set(this.signinTwitterButton, 'backgroundImage', `url(${twitterImg}`);
+    domStyle.set(this.signinGPlusButton, 'backgroundImage', `url(${googlePlusImg}`);
+    domStyle.set(this.signinEsriButton, 'backgroundImage', `url(${esriImg}`);
+    domStyle.set(this.signinOrDiv, 'backgroundImage', `url(${separatorImg}`);
+
+    // domStyle.set(this.signinGuestButton, 'backgroundImage', `url(${imageBaseURL}guest-user.png)`);
+    // domStyle.set(this.signinFBButton, 'backgroundImage', `url(${imageBaseURL}facebook.png)`);
+    // domStyle.set(this.signinTwitterButton, 'backgroundImage', `url(${imageBaseURL}twitter.png)`);
+    // domStyle.set(this.signinGPlusButton, 'backgroundImage', `url(${imageBaseURL}googleplus.png)`);
+    // domStyle.set(this.signinEsriButton, 'backgroundImage', `url(${imageBaseURL}esri.png)`);
+    // domStyle.set(this.signinOrDiv, 'backgroundImage', `url(${imageBaseURL}seperator.png)`);
   },
 
         /**
