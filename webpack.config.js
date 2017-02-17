@@ -3,6 +3,7 @@
 var path = require('path');
 var webpack = require('webpack');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
+var HtmlWebpackPlugin = require('html-webpack-plugin');
 
 
 module.exports = {
@@ -18,8 +19,9 @@ module.exports = {
   },
 
   output: {
-    path: path.resolve(__dirname, 'dist'),
-    filename: '[name].js',
+    path: path.resolve(__dirname),
+    publicPath: '/',
+    filename: 'bundle.js',
     libraryTarget: 'amd'
   },
 
@@ -57,13 +59,19 @@ module.exports = {
   plugins: [
     new ExtractTextPlugin('styles.css'),
     new webpack.optimize.CommonsChunkPlugin({
-      name: ['vendor']
+      name: 'vendor',
+      filename: 'vendor.js'
+    }),
+    new HtmlWebpackPlugin({
+      template: 'index.html',
+      inject: false
     })
   ],
 
-  devServer: {
-    port: 5005
-  },
+  // devServer: {
+  //   port: 8001,
+  //   stats: 'verbose'
+  // },
 
   performance: {
     hints: false
